@@ -3,6 +3,8 @@ import { render, screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import Question from "../components/Question";
 
+jest.useFakeTimers();
+
 const testQuestion = {
   id: 1,
   prompt: "lorem testum",
@@ -12,18 +14,8 @@ const testQuestion = {
 
 const noop = () => {};
 
-beforeEach(() => {
-  jest.useFakeTimers();
-});
-
-afterEach(() => {
-  jest.runOnlyPendingTimers();
-  jest.useRealTimers();
-});
-
-// const onChange = jest.fn();
 test("creates an interval with setTimeout", () => {
-  jest.spyOn(global, 'setTimeout');
+  jest.spyOn(global, "setTimeout");
   render(<Question question={testQuestion} onAnswered={noop} />);
   expect(setTimeout).toHaveBeenCalled();
 });
@@ -49,13 +41,13 @@ test("calls onAnswered after 10 seconds", () => {
   const onAnswered = jest.fn();
   render(<Question question={testQuestion} onAnswered={onAnswered} />);
   act(() => {
-    jest.advanceTimersByTime(11000);
+    jest.advanceTimersByTime(10000);
   });
   expect(onAnswered).toHaveBeenCalledWith(false);
 });
 
 test("clears the timeout after unmount", () => {
-  jest.spyOn(global, 'clearTimeout');
+  jest.spyOn(global, "clearTimeout");
   const { unmount } = render(
     <Question question={testQuestion} onAnswered={noop} />
   );
